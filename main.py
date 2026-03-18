@@ -4,7 +4,23 @@ from discord import app_commands, ui # New import for Slash Commands
 from discord.ext import commands
 from dotenv import load_dotenv
 from supabase import create_client, Client
+from flask import Flask
+from threading import Thread
 import re
+
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Bot is alive!"
+
+def run():
+    # Koyeb specifically looks for port 8000 by default
+    app.run(host='0.0.0.0', port=8000)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -271,4 +287,6 @@ def range_to_string(time_ranges):
     return output.rstrip(", ")
 
 
-bot.run(TOKEN)
+if __name__ == "__main__":
+    keep_alive()
+    bot.run(TOKEN)
